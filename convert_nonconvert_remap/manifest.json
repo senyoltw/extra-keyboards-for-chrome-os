@@ -4,7 +4,7 @@
   "manifest_version": 3,
   "description": "Allows you to remap Convert NonConvert",
   "background": {
-    "scripts": ["background.js"]
+    "service_worker": ["background.js"]
   },
   "permissions": [
     "input"
