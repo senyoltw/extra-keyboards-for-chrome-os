@@ -14,10 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 {
-  "name": "CapsLock remapper",
-  "version": "1.0",
+  "name": "Convert NonConvert remapper",
+  "version": "0.1",
   "manifest_version": 2,
-  "description": "Allows you to remap CapsLock",
+  "description": "Allows you to remap Convert NonConvert",
   "background": {
     "scripts": ["background.js"]
   },
@@ -26,12 +26,12 @@ limitations under the License.
   ],
   "input_components": [
     {
-      "name": "CapsLock remapper",
+      "name": "Convert NonConvert remapper",
       "type": "ime",
-      "id": "capslock_remapper",
-      "description": "Allows you to remap CapsLock",  // user visible description
-      "language": "en-US",  // The primary language this IME is used for
-      "layouts": ["us"]  // The supported keyboard layouts for this IME
+      "id": "convert_nonconvert_remapper",
+      "description": "Allows you to remap Convert NonConvert",  // user visible description
+      "language": "ja-JP",  // The primary language this IME is used for
+      "layouts": ["ja"]  // The supported keyboard layouts for this IME
     }
   ]
 }

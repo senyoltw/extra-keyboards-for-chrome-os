@@ -25,8 +25,12 @@ chrome.input.ime.onBlur.addListener(function(context) {
   contextID = -1;
 });
 
-function isCapsLock(keyData) {
-   return (keyData.code == "CapsLock");
+function isConvert(keyData) {
+   return (keyData.code == "Convert");
+};
+
+function isNonConvert(keyData) {
+  return (keyData.code == "NonConvert");
 };
 
 function isRemappedEvent(keyData) {  
@@ -48,26 +52,47 @@ chrome.input.ime.onKeyEvent.addListener(
       }
       
       
-      if (isCapsLock(keyData)) {
+      if (isConvert(keyData)) {
         keyData.code = "ControlLeft";
         keyData.key = "Ctrl";
         keyData.ctrlKey = (keyData.type == "keydown");
         ctrlKey = keyData.ctrlKey;
-        keyData.capsLock = false;
+        keyData.convert = false;
         chrome.input.ime.sendKeyEvents({"contextID": contextID, "keyData": [keyData]});
         lastRemappedKeyEvent = keyData;                                                 handled = true;
       } else if (ctrlKey) {
         keyData.ctrlKey = ctrlKey;
-        keyData.capsLock = false;
+        keyData.convert = false;
         chrome.input.ime.sendKeyEvents({"contextID": contextID, "keyData": [keyData]});
         lastRemappedKeyEvent = keyData;
         handled = true;
-      } else if (keyData.capsLock) {
-	keyData.capsLock = false;
+      } else if (keyData.convert) {
+	keyData.convert = false;
         chrome.input.ime.sendKeyEvents({"contextID": contextID, "keyData": [keyData]});
         lastRemappedKeyEvent = keyData;
         handled = true;
       }
-      
+
+      if (isNonConvert(keyData)) {
+        keyData.code = "ControlLeft";
+        keyData.key = "Ctrl";
+        keyData.ctrlKey = (keyData.type == "keydown");
+        ctrlKey = keyData.ctrlKey;
+        keyData.nonconvert = false;
+        chrome.input.ime.sendKeyEvents({"contextID": contextID, "keyData": [keyData]});
+        lastRemappedKeyEvent = keyData;                                                 handled = true;
+      } else if (ctrlKey) {
+        keyData.ctrlKey = ctrlKey;
+        keyData.nonconvert = false;
+        chrome.input.ime.sendKeyEvents({"contextID": contextID, "keyData": [keyData]});
+        lastRemappedKeyEvent = keyData;
+        handled = true;
+      } else if (keyData.nonconvert) {
+	keyData.nonconvert = false;
+        chrome.input.ime.sendKeyEvents({"contextID": contextID, "keyData": [keyData]});
+        lastRemappedKeyEvent = keyData;
+        handled = true;
+      }
+
       return handled;
 });
