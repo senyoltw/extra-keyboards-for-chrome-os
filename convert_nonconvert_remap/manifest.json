@@ -16,7 +16,7 @@ limitations under the License.
 {
   "name": "Convert NonConvert remapper",
   "version": "0.1",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "description": "Allows you to remap Convert NonConvert",
   "background": {
     "scripts": ["background.js"]
