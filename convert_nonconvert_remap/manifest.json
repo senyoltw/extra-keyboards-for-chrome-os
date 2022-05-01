@@ -16,7 +16,7 @@
       "id": "convert_nonconvert_remapper",
       "description": "Allows you to remap Convert NonConvert",  // user visible description
       "language": "ja-JP",  // The primary language this IME is used for
-      "layouts": ["ja"]  // The supported keyboard layouts for this IME
+      "layouts": ["jp"]  // The supported keyboard layouts for this IME
     }
   ]
 }
