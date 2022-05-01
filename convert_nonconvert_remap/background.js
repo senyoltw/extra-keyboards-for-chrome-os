@@ -1,83 +1,43 @@
-var contextID = -1;
-var lastRemappedKeyEvent = undefined;
-var ctrlKey = false;
+var contextID = 0;
 
-chrome.input.ime.onFocus.addListener(function(context) {
-  contextID = context.contextID;
-});
-
-chrome.input.ime.onBlur.addListener(function(context) {
-  contextID = -1;
-});
-
-function isConvert(keyData) {
-   return (keyData.code == "Convert");
+var lut = {
+  "Convert": "ControlLeft",
+  "NonConvert": "ControlLeft",
 };
+    
 
-function isNonConvert(keyData) {
-  return (keyData.code == "NonConvert");
-};
+chrome.input.ime.onFocus.addListener(
+    function(context) {
+      contextID = context.contextID;
+    }
+);
 
-function isRemappedEvent(keyData) {  
- // hack, should check for a sender ID (to be added to KeyData)
- return lastRemappedKeyEvent != undefined &&
-        (lastRemappedKeyEvent.key == keyData.key &&
-         lastRemappedKeyEvent.code == keyData.code &&
-         lastRemappedKeyEvent.type == keyData.type
-        ); // requestID would be different so we are not checking for it  
-}
+chrome.input.ime.onBlur.addListener(() => {
+  contextID = 0;
+})
+
 
 chrome.input.ime.onKeyEvent.addListener(
     function(engineID, keyData) {
       var handled = false;
       
-      if (isRemappedEvent(keyData)) {
-        console.log(keyData); // TODO eventually remove
-        return false;
-      }
-      
-      
-      if (isConvert(keyData)) {
-        keyData.code = "ControlLeft";
-        keyData.key = "Ctrl";
-        keyData.ctrlKey = (keyData.type == "keydown");
-        ctrlKey = keyData.ctrlKey;
-        keyData.convert = false;
-        chrome.input.ime.sendKeyEvents({"contextID": contextID, "keyData": [keyData]});
-        lastRemappedKeyEvent = keyData;                                                 handled = true;
-      } else if (ctrlKey) {
-        keyData.ctrlKey = ctrlKey;
-        keyData.convert = false;
-        chrome.input.ime.sendKeyEvents({"contextID": contextID, "keyData": [keyData]});
-        lastRemappedKeyEvent = keyData;
-        handled = true;
-      } else if (keyData.convert) {
-	keyData.convert = false;
-        chrome.input.ime.sendKeyEvents({"contextID": contextID, "keyData": [keyData]});
-        lastRemappedKeyEvent = keyData;
-        handled = true;
-      }
+      if (keyData.type == "keydown") {
+        if (lut[keyData.code]) {
+          let emit = lut[keyData.code];
 
-      if (isNonConvert(keyData)) {
-        keyData.code = "ControlLeft";
-        keyData.key = "Ctrl";
-        keyData.ctrlKey = (keyData.type == "keydown");
-        ctrlKey = keyData.ctrlKey;
-        keyData.nonconvert = false;
-        chrome.input.ime.sendKeyEvents({"contextID": contextID, "keyData": [keyData]});
-        lastRemappedKeyEvent = keyData;                                                 handled = true;
-      } else if (ctrlKey) {
-        keyData.ctrlKey = ctrlKey;
-        keyData.nonconvert = false;
-        chrome.input.ime.sendKeyEvents({"contextID": contextID, "keyData": [keyData]});
-        lastRemappedKeyEvent = keyData;
-        handled = true;
-      } else if (keyData.nonconvert) {
-	keyData.nonconvert = false;
-        chrome.input.ime.sendKeyEvents({"contextID": contextID, "keyData": [keyData]});
-        lastRemappedKeyEvent = keyData;
-        handled = true;
+          if (emit != null && contextID != 0) {
+            chrome.input.ime.commitText({
+              "contextID": contextID,
+              "text": emit,
+            }, () => {
+              if (chrome.runtime.lastError) {
+                console.error('Error committing text:', chrome.runtime.lastError);
+                return;
+              }
+            });
+          }
+          handled = true;
+        }
       }
-
       return handled;
 });
