@@ -2,7 +2,7 @@ var contextID = 0;
 
 var lut = {
   "Convert": "ControlLeft",
-  "NonConvert": "ControlLeft",
+  "NonConvert": "ControlLeft"
 };
     
 
