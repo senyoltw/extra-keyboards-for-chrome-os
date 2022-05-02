@@ -26,12 +26,12 @@ chrome.input.ime.onKeyEvent.addListener(
           let emit = lut[keyData.code];
 
           if (emit != null && contextID != 0) {
-            chrome.input.ime.commitText({
+            chrome.input.ime.sendKeyEvents({
               "contextID": contextID,
-              "text": emit,
+              "keyData": emit,
             }, () => {
               if (chrome.runtime.lastError) {
-                console.error('Error committing text:', chrome.runtime.lastError);
+                console.error('Error committing keyData:', chrome.runtime.lastError);
                 return;
               }
             });
